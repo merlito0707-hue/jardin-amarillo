@@ -899,34 +899,123 @@
   }
 
 
-  /* ---------- la canción ---------- */
-  .sonido{
+  /* ---------- el tocadiscos ---------- */
+  .reproductor{
     position:absolute;
-    top:calc(16px + env(safe-area-inset-top, 0px));
-    right:16px;
+    top:calc(14px + env(safe-area-inset-top, 0px));
+    right:14px;
     z-index:7;
-    width:42px;
-    height:42px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    max-width:calc(100vw - 28px);
+    padding:8px 14px 8px 8px;
+    border-radius:999px;
+    background:rgba(255,253,246,.88);
+    border:1px solid rgba(210,96,58,.28);
+    box-shadow:0 8px 20px rgba(70,140,190,.18);
+    backdrop-filter:blur(4px);
+  }
+  .disco{
+    position:relative;
+    flex:none;
+    width:46px;
+    height:46px;
+    padding:0;
+    border:0;
+    border-radius:50%;
+    background:none;
+    cursor:pointer;
+    filter:drop-shadow(0 2px 4px rgba(120,80,10,.35));
+  }
+  .vinilo{width:46px;height:46px;display:block;}
+  .reproductor.sonando .vinilo{animation:girarDisco 3.6s linear infinite;}
+  @keyframes girarDisco{to{rotate:360deg;}}
+  .senal-pausa{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:20px;
+    height:20px;
+    transform:translate(-50%,-50%);
+    filter:drop-shadow(0 1px 2px rgba(90,50,4,.5));
+  }
+  .senal-pausa[hidden]{display:none;}
+  .disco:focus-visible{outline:2px solid var(--coral);outline-offset:3px;}
+  /* mientras el navegador no deja sonar, el disco llama la atención */
+  .reproductor.pidiendo{animation:latirSonido 1.9s ease-in-out infinite;border-color:var(--coral);}
+  @keyframes latirSonido{
+    0%,100%{box-shadow:0 8px 20px rgba(70,140,190,.18), 0 0 0 0 rgba(210,96,58,.36);}
+    60%{box-shadow:0 8px 20px rgba(70,140,190,.18), 0 0 0 13px rgba(210,96,58,0);}
+  }
+
+  .controles{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .barra{
+    position:relative;
+    width:140px;
+    max-width:40vw;
+    height:7px;
+    border-radius:999px;
+    background:rgba(160,120,60,.25);
+    cursor:pointer;
+  }
+  .barra:focus-visible{outline:2px solid var(--coral);outline-offset:3px;}
+  .progreso{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    background:linear-gradient(90deg,#e8a11a,var(--coral));
+  }
+  .fila{display:flex;align-items:center;gap:8px;}
+  .tiempo,.nivel{
+    font-size:.6rem;
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+    color:var(--tinta-suave);
+    white-space:nowrap;
+  }
+  .salto{
+    flex:none;
+    width:22px;
+    height:22px;
+    padding:0;
     display:grid;
     place-items:center;
-    border:1px solid rgba(210,96,58,.4);
-    border-radius:999px;
-    background:rgba(255,255,255,.8);
+    border:0;
+    border-radius:50%;
+    background:none;
     color:var(--coral);
     cursor:pointer;
-    backdrop-filter:blur(3px);
-    box-shadow:0 6px 14px rgba(70,140,190,.16);
-    transition:background .25s ease, transform .25s ease, border-color .25s ease;
   }
-  .sonido svg{width:21px;height:21px;}
-  .sonido svg[hidden]{display:none;}
-  .sonido:hover{background:#fff;transform:scale(1.06);}
-  .sonido:focus-visible{outline:2px solid var(--coral);outline-offset:3px;}
-  /* si el navegador bloqueó el audio, el botón late para pedir un toque */
-  .sonido.pidiendo{animation:latirSonido 1.9s ease-in-out infinite;border-color:var(--coral);}
-  @keyframes latirSonido{
-    0%,100%{box-shadow:0 6px 14px rgba(70,140,190,.16), 0 0 0 0 rgba(210,96,58,.38);}
-    60%{box-shadow:0 6px 14px rgba(70,140,190,.16), 0 0 0 12px rgba(210,96,58,0);}
+  .salto svg{width:15px;height:15px;}
+  .salto:hover{background:rgba(210,96,58,.14);}
+  .salto:focus-visible{outline:2px solid var(--coral);outline-offset:2px;}
+  .volumen{
+    -webkit-appearance:none;
+    appearance:none;
+    width:72px;
+    max-width:24vw;
+    height:5px;
+    border-radius:999px;
+    background:rgba(160,120,60,.25);
+    cursor:pointer;
+  }
+  .volumen::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:13px;height:13px;border-radius:50%;
+    background:var(--coral);border:2px solid #fffdf6;
+    box-shadow:0 1px 3px rgba(120,60,20,.4);
+  }
+  .volumen::-moz-range-thumb{
+    width:13px;height:13px;border-radius:50%;
+    background:var(--coral);border:2px solid #fffdf6;
+  }
+  .volumen:focus-visible{outline:2px solid var(--coral);outline-offset:3px;}
+
+  @media (max-width:430px){
+    .reproductor{gap:8px;padding:7px 10px 7px 7px;}
+    .barra{width:104px;}
+    .volumen{width:54px;}
   }
 
   /* ---------- tarjeta ---------- */
@@ -2249,17 +2338,57 @@
     <button class="btn btn-suave otravez" id="otravez" type="button">Florecer de nuevo</button>
   </div>
   <p class="pista">Toca el tulipán del centro</p>
-  <button class="sonido" id="sonido" type="button" aria-pressed="false"
-          aria-label="Chinita Linda, de Álvaro Díaz y Rawayana: activar o silenciar la música" title="Chinita Linda — Álvaro Díaz y Rawayana">
-    <svg class="icono-on" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M4 9.5h3.2L12 5.6v12.8L7.2 14.5H4z" fill="currentColor"/>
-      <path d="M15.4 9.2a4 4 0 0 1 0 5.6M17.8 6.8a7.4 7.4 0 0 1 0 10.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-    </svg>
-    <svg class="icono-off" viewBox="0 0 24 24" aria-hidden="true" hidden>
-      <path d="M4 9.5h3.2L12 5.6v12.8L7.2 14.5H4z" fill="currentColor"/>
-      <path d="M15.6 9.6l5 4.8M20.6 9.6l-5 4.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-    </svg>
-  </button>
+  <div class="reproductor" id="reproductor">
+    <button class="disco" id="disco" type="button" aria-label="Reproducir o pausar la música">
+      <svg class="vinilo" viewBox="0 0 64 64" aria-hidden="true">
+        <defs>
+          <radialGradient id="gVinilo" cx=".36" cy=".3" r=".78">
+            <stop offset="0" stop-color="#fbe19a"/>
+            <stop offset=".45" stop-color="#dcac35"/>
+            <stop offset=".82" stop-color="#b07f14"/>
+            <stop offset="1" stop-color="#8a5f06"/>
+          </radialGradient>
+          <linearGradient id="gLustre" x1="0" y1="0" x2=".9" y2="1">
+            <stop offset="0" stop-color="#ffffff" stop-opacity=".6"/>
+            <stop offset=".5" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="32" r="31" fill="url(#gVinilo)"/>
+        <g fill="none" stroke="rgba(92,60,4,.26)" stroke-width=".7">
+          <circle cx="32" cy="32" r="28"/><circle cx="32" cy="32" r="25.5"/>
+          <circle cx="32" cy="32" r="23"/><circle cx="32" cy="32" r="20.5"/>
+          <circle cx="32" cy="32" r="18"/><circle cx="32" cy="32" r="15.5"/>
+        </g>
+        <path d="M32 1 A31 31 0 0 1 63 32 L32 32 Z" fill="url(#gLustre)"/>
+        <circle cx="32" cy="32" r="12" fill="#fff4d6" stroke="rgba(150,100,10,.32)"/>
+        <circle cx="32" cy="32" r="12" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".6"/>
+        <circle cx="32" cy="32" r="3.4" fill="#8a5c08"/>
+        <circle cx="32" cy="32" r="1.2" fill="#fff4d6"/>
+      </svg>
+      <svg class="senal-pausa" viewBox="0 0 24 24" aria-hidden="true" hidden>
+        <path d="M9 6.5 L19 12 L9 17.5 Z" fill="#fff" stroke="rgba(120,70,6,.5)" stroke-width="1"/>
+      </svg>
+    </button>
+
+    <div class="controles">
+      <div class="barra" id="barra" role="slider" tabindex="0" aria-label="Avanzar la canción"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="progreso" id="progreso"></div>
+      </div>
+      <div class="fila">
+        <span class="tiempo" id="tiempo">0:00</span>
+        <button class="salto" id="adelantar" type="button" aria-label="Adelantar quince segundos">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 6 L12 12 L4 18 Z" fill="currentColor"/>
+            <path d="M13 6 L21 12 L13 18 Z" fill="currentColor"/>
+          </svg>
+        </button>
+        <input class="volumen" id="volumen" type="range" min="0" max="100" step="1" value="55"
+               aria-label="Volumen de la música">
+        <span class="nivel" id="nivel">55%</span>
+      </div>
+    </div>
+  </div>
   <p class="instruccion" id="instruccion" hidden>Haz clic en los pétalos</p>
   <button class="volver" id="volver" type="button" hidden>Volver al jardín</button>
 </div>
@@ -2732,28 +2861,58 @@
   });
 
 
-  /* ---------- la canción: intenta sonar sola y, si el navegador la frena, espera un toque ---------- */
+  /* ---------- el tocadiscos: disco que gira, pausa, avance y volumen ---------- */
   var audio = document.getElementById('cancion');
-  var btnSonido = document.getElementById('sonido');
-  var iconoOn = btnSonido.querySelector('.icono-on');
-  var iconoOff = btnSonido.querySelector('.icono-off');
+  var repro = document.getElementById('reproductor');
+  var btnDisco = document.getElementById('disco');
+  var senalPausa = btnDisco.querySelector('.senal-pausa');
+  var barra = document.getElementById('barra');
+  var progreso = document.getElementById('progreso');
+  var elTiempo = document.getElementById('tiempo');
+  var btnAdelantar = document.getElementById('adelantar');
+  var ctlVolumen = document.getElementById('volumen');
+  var elNivel = document.getElementById('nivel');
   var quiereSonar = true;
   var subiendo;
 
-  function pintarSonido(){
-    var sonando = !audio.paused && quiereSonar;
-    iconoOn.hidden = !sonando;
-    iconoOff.hidden = sonando;
-    btnSonido.setAttribute('aria-pressed', sonando ? 'true' : 'false');
-    if (sonando) btnSonido.classList.remove('pidiendo');
+  function reloj(t){
+    if (!isFinite(t)) return '0:00';
+    var m = Math.floor(t / 60), r = Math.floor(t % 60);
+    return m + ':' + (r < 10 ? '0' : '') + r;
   }
 
-  function subirVolumen(){
+  function pintarEstado(){
+    var sonando = !audio.paused;
+    repro.classList.toggle('sonando', sonando);
+    senalPausa.hidden = sonando;
+    btnDisco.setAttribute('aria-label', sonando ? 'Pausar la música' : 'Reproducir la música');
+    if (sonando) repro.classList.remove('pidiendo');
+  }
+
+  function pintarTiempo(){
+    var d = audio.duration;
+    var p = (d && isFinite(d)) ? (audio.currentTime / d) * 100 : 0;
+    progreso.style.width = p.toFixed(2) + '%';
+    barra.setAttribute('aria-valuenow', Math.round(p));
+    elTiempo.textContent = reloj(audio.currentTime);
+  }
+
+  function ponerVolumen(v){
+    v = Math.max(0, Math.min(100, v));
+    audio.volume = v / 100;
+    ctlVolumen.value = v;
+    elNivel.textContent = Math.round(v) + '%';
+  }
+
+  /* al empezar, el volumen sube solo hasta el nivel elegido */
+  function fundirEntrada(){
     clearInterval(subiendo);
+    var meta = Number(ctlVolumen.value), v = 0;
     audio.volume = 0;
     subiendo = setInterval(function(){
-      audio.volume = Math.min(.55, audio.volume + .03);
-      if (audio.volume >= .55) clearInterval(subiendo);
+      v = Math.min(meta, v + 3);
+      audio.volume = v / 100;
+      if (v >= meta) clearInterval(subiendo);
     }, 90);
   }
 
@@ -2761,39 +2920,79 @@
     if (!quiereSonar) return;
     var p = audio.play();
     if (p && p.then){
-      p.then(function(){ if (suave) subirVolumen(); pintarSonido(); })
-       .catch(function(){ btnSonido.classList.add('pidiendo'); pintarSonido(); });
+      p.then(function(){ if (suave) fundirEntrada(); pintarEstado(); })
+       .catch(function(){ repro.classList.add('pidiendo'); pintarEstado(); });
     } else {
-      pintarSonido();
+      pintarEstado();
     }
   }
 
-  btnSonido.addEventListener('click', function(e){
+  btnDisco.addEventListener('click', function(e){
     e.stopPropagation();
-    if (!audio.paused && quiereSonar){
+    if (!audio.paused){
       quiereSonar = false;
       audio.pause();
     } else {
       quiereSonar = true;
-      intentarSonar(audio.currentTime === 0);
+      clearInterval(subiendo);
+      ponerVolumen(Number(ctlVolumen.value));
+      intentarSonar(false);
     }
-    pintarSonido();
+    pintarEstado();
   });
 
-  audio.addEventListener('play', pintarSonido);
-  audio.addEventListener('pause', pintarSonido);
+  btnAdelantar.addEventListener('click', function(e){
+    e.stopPropagation();
+    if (isFinite(audio.duration)) {
+      audio.currentTime = Math.min(audio.duration - 0.4, audio.currentTime + 15);
+    }
+    pintarTiempo();
+  });
+
+  function buscarEn(x){
+    if (!isFinite(audio.duration)) return;
+    var r = barra.getBoundingClientRect();
+    audio.currentTime = Math.max(0, Math.min(1, (x - r.left) / r.width)) * audio.duration;
+    pintarTiempo();
+  }
+  barra.addEventListener('pointerdown', function(e){
+    e.stopPropagation();
+    try { barra.setPointerCapture(e.pointerId); } catch (err) {}
+    buscarEn(e.clientX);
+  });
+  barra.addEventListener('pointermove', function(e){
+    if (barra.hasPointerCapture && barra.hasPointerCapture(e.pointerId)) buscarEn(e.clientX);
+  });
+  barra.addEventListener('keydown', function(e){
+    if (!isFinite(audio.duration)) return;
+    if (e.key === 'ArrowRight'){ e.preventDefault(); audio.currentTime = Math.min(audio.duration, audio.currentTime + 5); }
+    if (e.key === 'ArrowLeft'){ e.preventDefault(); audio.currentTime = Math.max(0, audio.currentTime - 5); }
+    pintarTiempo();
+  });
+
+  ctlVolumen.addEventListener('input', function(e){
+    e.stopPropagation();
+    clearInterval(subiendo);
+    ponerVolumen(Number(ctlVolumen.value));
+  });
+  ctlVolumen.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
+
+  audio.addEventListener('play', pintarEstado);
+  audio.addEventListener('pause', pintarEstado);
+  audio.addEventListener('timeupdate', pintarTiempo);
+  audio.addEventListener('loadedmetadata', pintarTiempo);
 
   /* el primer toque en cualquier parte destraba el audio */
-  function destrabar(){
-    if (audio.paused && quiereSonar) intentarSonar(true);
-  }
+  function destrabar(){ if (audio.paused && quiereSonar) intentarSonar(true); }
   ['pointerdown', 'keydown', 'touchstart'].forEach(function(ev){
     document.addEventListener(ev, destrabar, { once: true, passive: true });
   });
 
+  ponerVolumen(55);
   audio.volume = 0;
   intentarSonar(true);
-  pintarSonido();
+  pintarEstado();
+  pintarTiempo();
 
   medir();
   poblar();
